@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Field Reporting Portal</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: #f2efe9;
+    color: #222;
+    min-height: 100vh;
+    padding: 0 0 80px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: #111;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #aaa;
+  }
+
+  .header-logo-placeholder {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #555;
+  }
+
+  /* ── PAGE ── */
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 40px 16px 0;
+  }
+
+  .page-heading {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #bbb;
+    margin-bottom: 6px;
+  }
+
+  .page-sub {
+    font-size: 13px;
+    color: #aaa;
+    font-style: italic;
+    margin-bottom: 32px;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e0ddd8;
+  }
+
+  /* ── COMPANY GRID ── */
+  .company-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 36px;
+  }
+
+  .company-card {
+    background: #fff;
+    border: 1px solid #e0ddd8;
+    border-radius: 4px;
+    padding: 18px 16px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    text-align: center;
+  }
+
+  .company-card:hover {
+    border-color: #bbb;
+  }
+
+  .company-card.active {
+    border-color: #d41f2b;
+    border-width: 2px;
+  }
+
+  .company-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .company-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 3px;
+  }
+
+  .company-count {
+    font-size: 11px;
+    color: #aaa;
+  }
+
+  /* ── FORMS LIST ── */
+  .forms-container {
+    display: none;
+  }
+
+  .forms-container.visible {
+    display: block;
+  }
+
+  .forms-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e0ddd8;
+  }
+
+  .forms-header-company {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #aaa;
+  }
+
+  .form-row {
+    background: #fff;
+    border: 1px solid #e0ddd8;
+    border-radius: 4px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 0.15s;
+  }
+
+  .form-row:hover {
+    border-color: #bbb;
+  }
+
+  .form-row-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .form-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+
+  .form-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #222;
+    margin-bottom: 2px;
+  }
+
+  .form-desc {
+    font-size: 12px;
+    color: #aaa;
+    font-style: italic;
+  }
+
+  .form-arrow {
+    font-size: 18px;
+    color: #ccc;
+    flex-shrink: 0;
+  }
+
+  .form-row:hover .form-arrow {
+    color: #888;
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #aaa;
+    font-size: 13px;
+    font-style: italic;
+  }
+
+  @media (max-width: 520px) {
+    .header { padding: 14px 16px; }
+    .page { padding: 24px 12px 0; }
+    .company-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-title">Field Reporting Portal</span>
+  <span class="header-logo-placeholder">Logo placeholder</span>
+</div>
+
+<div class="page">
+  <h1 class="page-heading">Select a Company</h1>
+  <p class="page-sub">Choose a company below to view and fill out available forms.</p>
+
+  <div class="section-label">Companies</div>
+
+  <div class="company-grid" id="companyGrid"></div>
+
+  <div class="forms-container" id="formsContainer">
+    <div class="forms-header">
+      <span class="forms-header-company" id="formsHeaderLabel">Forms</span>
+    </div>
+    <div id="formsList"></div>
+  </div>
+</div>
+
+<script>
+  const companies = [
+    {
+      id: 'steg',
+      name: 'Steg Plumbing',
+      initials: 'SP',
+      color: '#d41f2b',
+      bg: '#fff0f0',
+      forms: [
+        {
+          name: 'Rough-In Daily Progress Report',
+          desc: 'Complete at the end of each workday',
+          url: 'https://djadmin2251.github.io/steg-daily-report/',
+          color: '#d41f2b',
+          bg: '#fff0f0'
+        }
+      ]
+    }
+  ];
+
+  const grid = document.getElementById('companyGrid');
+  const formsContainer = document.getElementById('formsContainer');
+  const formsList = document.getElementById('formsList');
+  const formsHeaderLabel = document.getElementById('formsHeaderLabel');
+
+  let activeCompany = null;
+
+  function renderCompanies() {
+    grid.innerHTML = '';
+    companies.forEach(company => {
+      const card = document.createElement('div');
+      card.className = 'company-card' + (activeCompany === company.id ? ' active' : '');
+      card.innerHTML = `
+        <div class="company-icon" style="background: ${company.bg}; color: ${company.color};">${company.initials}</div>
+        <div class="company-name">${company.name}</div>
+        <div class="company-count">${company.forms.length} form${company.forms.length !== 1 ? 's' : ''} available</div>
+      `;
+      card.addEventListener('click', () => selectCompany(company.id));
+      grid.appendChild(card);
+    });
+  }
+
+  function selectCompany(id) {
+    if (activeCompany === id) {
+      activeCompany = null;
+      formsContainer.classList.remove('visible');
+      renderCompanies();
+      return;
+    }
+
+    activeCompany = id;
+    const company = companies.find(c => c.id === id);
+
+    formsHeaderLabel.textContent = company.name + ' — Available Forms';
+    formsList.innerHTML = '';
+
+    if (company.forms.length === 0) {
+      formsList.innerHTML = '<div class="empty-state">No forms available yet.</div>';
+    } else {
+      company.forms.forEach(form => {
+        const row = document.createElement('a');
+        row.className = 'form-row';
+        row.href = form.url;
+        row.innerHTML = `
+          <div class="form-row-left">
+            <div class="form-icon" style="background: ${form.bg}; color: ${form.color};">&#9654;</div>
+            <div>
+              <div class="form-name">${form.name}</div>
+              <div class="form-desc">${form.desc}</div>
+            </div>
+          </div>
+          <div class="form-arrow">→</div>
+        `;
+        formsList.appendChild(row);
+      });
+    }
+
+    formsContainer.classList.add('visible');
+    renderCompanies();
+
+    setTimeout(() => {
+      formsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 50);
+  }
+
+  renderCompanies();
+</script>
+</body>
+</html>
